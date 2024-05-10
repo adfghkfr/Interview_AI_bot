@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interview Bot</title>
+    <style>
+        #chat-container {
+            max-height: 400px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 50px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            resize: none; /* Disable manual resizing */
+        }
+    </style>
+</head>
+<body>
+    <h2>Interview Bot</h2>
+    <div id="chat-container">
+        <!-- Chat messages will be added here -->
+    </div>
+    <textarea id="user_input" placeholder="Type your question..." oninput="adjustTextAreaHeight(this)"></textarea>
+    <button onclick="submitQuestion()">Ask</button>
+
+  <script>
+    async function adjustTextAreaHeight(field) {
+        field.style.height = 'auto';
+        field.style.height = `${field.scrollHeight}px`;
+    }
+
+    async function submitQuestion() {
+        const input = document.getElementById('user_input');
+        const messageContainer = document.getElementById('chat-container');
+        const userText = input.value.trim();
+
+        if (userText) {
+            messageContainer.innerHTML += `<div>User: ${userText}</div>`;
+            const postData = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: `user_input=${encodeURIComponent(userText)}`
+            };
+
+            try {
+                const response = await fetch('/api/interview/', postData);
+                const data = await response.json();
+                messageContainer.innerHTML += `<div>Bot: ${data.response}</div>`;
+                messageContainer.scrollTop = messageContainer.scrollHeight;
+                input.value = '';
+                await adjustTextAreaHeight(input);
+            } catch (error) {
+                console.error('Error:', error);
+                messageContainer.innerHTML += `<div>Error communicating with the server. Please try again later.</div>`;
+            }
+        }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    window.onload = () => {
+        adjustTextAreaHeight(document.getElementById('user_input'));
+    }
+</script>
+</body>
+</html>

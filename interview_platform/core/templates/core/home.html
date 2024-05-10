@@ -1,0 +1,43 @@
+<!-- templates/home.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to the Interview Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1 {
+            color: #5a5a5a;
+        }
+        a {
+            color: darkblue;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .navigation {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .navigation a {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the Interview Platform</h1>
+    <div class="navigation">
+        <a href="{% url 'register' %}">Register</a>
+        <a href="{% url 'login' %}">Login</a>
+    </div>
+    <p>Prepare for your interviews or practice with automated feedback.</p>
+</body>
+</html>
